@@ -1,0 +1,69 @@
+#!/bin/bash
+
+echo "Q1 nginx"
+ready0=`kubectl get pods -o go-template --template="{{range .items}}{{range .spec.containers}}{{.image}} {{end}}{{end}}" | awk '{print $1}'`
+pod=${ready0}
+
+for i in 1;do
+ready1=`kubectl get pods | awk '{print $1}' | tail -n +2 | head -n $i` 
+
+if [[ "${pod}" == "nginx" ]]
+then
+	echo "Pod image => ${ready0}"
+	if [[ "${ready1:0:5}" == "nginx" ]]
+	then
+		echo "pod name => ${ready1:0:5}"
+		for b in 1; do
+		ready2=`kubectl get pods | awk '{print $3}' | tail -n +2 | head -n $b` 
+		if [[ "${ready2}" == "Running" ]]
+		then
+			echo "Pod is running, You got 10 out of 10 in first task"
+		else
+			echo "Your pod is not in running state, you get 0 out of 10 marks in first task"
+		fi
+		done
+	else
+		echo "You not deployed nginx name pod, you get 0 out of 10 marks in first task"
+	fi
+else 
+	echo "You not use nginx image, you get 0 out of 10 marks in first task"
+fi
+done
+
+echo "Q2 redis----------"
+
+file=/root/redis.yml
+
+if [ -f $file ]
+then
+	ready3=`kubectl get pods -o go-template --template="{{range .items}}{{range .spec.containers}}{{.image}} {{end}}{{end}}" | awk '{print $2}'`
+	pod1=${ready3}
+
+	for i in 1;do
+	ready4=`kubectl get pods | awk '{print $1}' | tail -n +3 | head -n $i` 
+
+	if [[ "${pod1}" == "redis" ]]
+	then
+		echo "Pod image => ${ready3}"
+		if [[ "${ready4:0:5}" == "redis" ]]
+		then
+			echo "pod name => ${ready4:0:5}"
+			for b in 1; do
+			ready5=`kubectl get pods | awk '{print $3}' | tail -n +3 | head -n $b` 
+			if [[ "${ready5}" == "Running" ]]
+			then
+				echo "Pod is running, You got 10 out of 10 in second task"
+			else
+				echo "Your pod is not in running state, you get 0 out of 10 marks in second task"
+			fi
+			done
+		else
+			echo "You not deployed httpd name pod, you get 0 out of 10 marks in second task"
+		fi
+	else 
+		echo "You not use mysql:latest image, you get 0 out of 10 marks in second task"
+	fi
+	done
+else
+	echo "mysql.yml doesn't exits you get 0 out of 10 marks in second task"
+fi
