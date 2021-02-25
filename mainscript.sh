@@ -25,7 +25,7 @@ read ch
   
 # Switch Case to perform 
 case $ch in
-  1)sh ./pod_script.sh.x
+  1)sh pod_script.sh.x
   ;; 
   2)echo "Deployment"
   ;; 
